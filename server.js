@@ -8,6 +8,7 @@ const DATA_SOURCES = [
   'https://portal.amfiindia.com/spages/NAVAll.txt',
   'https://www.amfiindia.com/spages/NAVAll.txt',
   'https://api.allorigins.win/raw?url=https://portal.amfiindia.com/spages/NAVAll.txt'
+  'https://www.amfiindia.com/spages/NAVAll.txt'
 ];
 
 const MIME_TYPES = {

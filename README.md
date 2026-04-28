@@ -8,6 +8,7 @@ This project fetches NAV data from AMFI and allows users to calculate the value 
 - Portfolio value calculation
 - Server-side AMFI proxy endpoint (`/api/funds`) with multi-source fallback
 - Client-side fallback data sources if server fetch fails
+- Server-side AMFI proxy endpoint (`/api/funds`) for reliable CORS-safe loading
 - Health endpoint (`/health`) for platform checks
 
 ## Run locally
