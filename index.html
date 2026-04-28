@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MF Portfolio Calculator</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -10,13 +11,15 @@
     <div class="container">
         <h1>Mutual Fund Portfolio Calculator</h1>
 
-        <label>Select Fund</label>
-        <select id="fundSelect">
+        <p id="statusMessage" aria-live="polite">Loading funds...</p>
+
+        <label for="fundSelect">Select Fund</label>
+        <select id="fundSelect" disabled>
             <option>Loading funds...</option>
         </select>
 
-        <label>Enter Units</label>
-        <input type="number" id="units" placeholder="e.g. 100">
+        <label for="units">Enter Units</label>
+        <input type="number" id="units" placeholder="e.g. 100" min="0" step="any">
 
         <button onclick="calculateValue()">Calculate Value</button>
 
