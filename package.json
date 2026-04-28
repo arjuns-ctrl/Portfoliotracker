@@ -1,0 +1,12 @@
+{
+  "name": "portfolio-tracker",
+  "version": "1.0.0",
+  "description": "Mutual Fund Portfolio Calculator deployable on Railway",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

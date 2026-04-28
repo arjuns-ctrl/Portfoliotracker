@@ -16,6 +16,16 @@ h1 {
     text-align: center;
 }
 
+#statusMessage {
+    margin-top: 10px;
+    color: #2f6fdf;
+    font-size: 14px;
+}
+
+#statusMessage.error {
+    color: #b30021;
+}
+
 label {
     display: block;
     margin-top: 15px;
@@ -26,6 +36,7 @@ select, input {
     width: 100%;
     padding: 10px;
     margin-top: 5px;
+    box-sizing: border-box;
 }
 
 button {
@@ -37,6 +48,7 @@ button {
     border: none;
     border-radius: 5px;
     font-size: 16px;
+    cursor: pointer;
 }
 
 button:hover {
