@@ -8,7 +8,6 @@ const DATA_SOURCES = [
   'https://portal.amfiindia.com/spages/NAVAll.txt',
   'https://www.amfiindia.com/spages/NAVAll.txt',
   'https://api.allorigins.win/raw?url=https://portal.amfiindia.com/spages/NAVAll.txt'
-  'https://www.amfiindia.com/spages/NAVAll.txt'
 ];
 
 const MIME_TYPES = {
@@ -58,11 +57,17 @@ async function handleApiFunds(res) {
   }
 }
 
-function serveStaticFile(reqPath, res) {
-  const cleanPath = reqPath === '/' ? '/index.html' : reqPath;
-  const filePath = path.join(ROOT, path.normalize(cleanPath));
+function resolveStaticPath(reqPath) {
+  const decodedPath = decodeURIComponent(reqPath || '/');
+  const relativePath = decodedPath === '/' ? 'index.html' : decodedPath.replace(/^\/+/, '');
+  const normalizedPath = path.normalize(relativePath);
+  return path.join(ROOT, normalizedPath);
+}
 
-  if (!filePath.startsWith(ROOT)) {
+function serveStaticFile(reqPath, res) {
+  const filePath = resolveStaticPath(reqPath);
+
+  if (!filePath.startsWith(ROOT + path.sep) && filePath !== path.join(ROOT, 'index.html')) {
     sendJson(res, 403, { error: 'Forbidden' });
     return;
   }
@@ -82,7 +87,8 @@ function serveStaticFile(reqPath, res) {
 }
 
 const server = http.createServer((req, res) => {
-  const url = new URL(req.url, `http://${req.headers.host}`);
+  const host = req.headers.host || `localhost:${PORT}`;
+  const url = new URL(req.url || '/', `http://${host}`);
 
   if (req.method === 'GET' && url.pathname === '/health') {
     sendJson(res, 200, { status: 'ok' });

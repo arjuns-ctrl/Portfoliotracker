@@ -37,6 +37,7 @@ async function fetchFundsData() {
   for (const source of CLIENT_DATA_SOURCES) {
     try {
       const response = await fetch(source);
+
       if (!response.ok) {
         throw new Error(`Source returned ${response.status}: ${source}`);
       }
@@ -57,65 +58,6 @@ async function fetchFundsData() {
   throw lastError || new Error('Unable to load funds from all sources.');
 }
 
-async function loadFunds() {
-  setStatus('Loading funds...');
-  fundSelect.disabled = true;
-
-  try {
-    const parsedFunds = await fetchFundsData();
-
-const fundSelect = document.getElementById('fundSelect');
-const statusMessage = document.getElementById('statusMessage');
-
-function setStatus(message, isError = false) {
-  statusMessage.textContent = message;
-  statusMessage.classList.toggle('error', isError);
-}
-
-function parseFunds(rawData) {
-  const parsed = [];
-  const lines = rawData.split('\n');
-
-  lines.forEach((line) => {
-    const parts = line.split(';');
-    const schemeName = parts[3];
-    const nav = parseFloat(parts[4]);
-
-    if (parts.length > 4 && schemeName && Number.isFinite(nav)) {
-      parsed.push({ schemeName, nav });
-    }
-  });
-
-  return parsed;
-}
-
-async function loadFunds() {
-  setStatus('Loading funds...');
-  fundSelect.disabled = true;
-
-  try {
-    const response = await fetch('/api/funds');
-    if (!response.ok) {
-      throw new Error(`Server responded with ${response.status}`);
-    }
-
-    const data = await response.text();
-    const parsedFunds = parseFunds(data);
-
-    if (!parsedFunds.length) {
-      throw new Error('No funds were parsed from the response.');
-    }
-
-    funds.splice(0, funds.length, ...parsedFunds);
-    populateDropdown();
-    fundSelect.disabled = false;
-    setStatus(`Loaded ${funds.length} funds.`);
-  } catch (error) {
-    setStatus(`Unable to load funds: ${error.message}`, true);
-    fundSelect.innerHTML = '<option>Unable to load funds</option>';
-  }
-}
-
 function populateDropdown() {
   fundSelect.innerHTML = '';
 
@@ -125,6 +67,23 @@ function populateDropdown() {
     option.textContent = fund.schemeName;
     fundSelect.appendChild(option);
   });
+}
+
+async function loadFunds() {
+  setStatus('Loading funds...');
+  fundSelect.disabled = true;
+
+  try {
+    const parsedFunds = await fetchFundsData();
+
+    funds.splice(0, funds.length, ...parsedFunds);
+    populateDropdown();
+    fundSelect.disabled = false;
+    setStatus(`Loaded ${funds.length} funds.`);
+  } catch (error) {
+    setStatus(`Unable to load funds: ${error.message}`, true);
+    fundSelect.innerHTML = '<option>Unable to load funds</option>';
+  }
 }
 
 function calculateValue() {
@@ -137,6 +96,7 @@ function calculateValue() {
   }
 
   const fund = funds[selectedIndex];
+
   if (!fund) {
     alert('Please select a valid fund.');
     return;
