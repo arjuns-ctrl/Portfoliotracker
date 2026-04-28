@@ -3,6 +3,70 @@ const funds = [];
 const fundSelect = document.getElementById('fundSelect');
 const statusMessage = document.getElementById('statusMessage');
 
+const CLIENT_DATA_SOURCES = [
+  '/api/funds',
+  'https://api.allorigins.win/raw?url=https://portal.amfiindia.com/spages/NAVAll.txt',
+  'https://www.amfiindia.com/spages/NAVAll.txt'
+];
+
+function setStatus(message, isError = false) {
+  statusMessage.textContent = message;
+  statusMessage.classList.toggle('error', isError);
+}
+
+function parseFunds(rawData) {
+  const parsed = [];
+  const lines = rawData.split('\n');
+
+  lines.forEach((line) => {
+    const parts = line.split(';');
+    const schemeName = parts[3];
+    const nav = parseFloat(parts[4]);
+
+    if (parts.length > 4 && schemeName && Number.isFinite(nav)) {
+      parsed.push({ schemeName, nav });
+    }
+  });
+
+  return parsed;
+}
+
+async function fetchFundsData() {
+  let lastError = null;
+
+  for (const source of CLIENT_DATA_SOURCES) {
+    try {
+      const response = await fetch(source);
+      if (!response.ok) {
+        throw new Error(`Source returned ${response.status}: ${source}`);
+      }
+
+      const text = await response.text();
+      const parsed = parseFunds(text);
+
+      if (!parsed.length) {
+        throw new Error(`No funds parsed from ${source}`);
+      }
+
+      return parsed;
+    } catch (error) {
+      lastError = error;
+    }
+  }
+
+  throw lastError || new Error('Unable to load funds from all sources.');
+}
+
+async function loadFunds() {
+  setStatus('Loading funds...');
+  fundSelect.disabled = true;
+
+  try {
+    const parsedFunds = await fetchFundsData();
+
+const fundSelect = document.getElementById('fundSelect');
+const statusMessage = document.getElementById('statusMessage');
+
 function setStatus(message, isError = false) {
   statusMessage.textContent = message;
   statusMessage.classList.toggle('error', isError);
